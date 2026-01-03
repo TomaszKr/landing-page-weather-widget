@@ -1,0 +1,215 @@
+:root {
+    --bg-color: #0a0a0a;
+    --text-color: #e0e0e0;
+    --primary-color: #00ff99;
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --base-font-size: clamp(1rem, 2.5vw, 1.5rem);
+    --h1-font-size: clamp(2.5rem, 8vw, 5rem);
+    --h2-font-size: clamp(1.5rem, 5vw, 2.5rem);
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    font-size: var(--base-font-size);
+    line-height: 1.6;
+    scroll-behavior: smooth;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10vh 5vw;
+}
+
+section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 20vh;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+h1, h2 {
+    font-weight: 500;
+    margin-bottom: 1rem;
+    text-wrap: balance;
+}
+
+h1 {
+    font-size: var(--h1-font-size);
+    line-height: 1.1;
+}
+
+h2 {
+    font-size: var(--h2-font-size);
+    color: var(--primary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+p {
+    margin-bottom: 1rem;
+    max-width: 60ch;
+}
+
+#statement {
+    min-height: 80vh;
+}
+
+#live-preview .preview-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#url-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#url-input {
+    min-width: 300px;
+    padding: 10px 15px;
+    border: 1px solid var(--primary-color);
+    background-color: transparent;
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+#url-input:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+button {
+    padding: 10px 20px;
+    border: 1px solid var(--primary-color);
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+button:hover {
+    background-color: transparent;
+    color: var(--primary-color);
+}
+
+.iframe-wrapper {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    border: 1px solid var(--primary-color);
+    background-color: #fff;
+    overflow: hidden;
+}
+
+#preview-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+#weather-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    transition: opacity 0.5s, backdrop-filter 0.5s;
+    z-index: 10;
+}
+
+#weather-overlay.sunny {
+    background-color: rgba(255, 180, 50, 0.1);
+    backdrop-filter: sepia(0.2) saturate(1.2);
+}
+
+#weather-overlay.rainy::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="noise" patternUnits="userSpaceOnUse" width="10" height="10"><image xlink:href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSJ3aGl0ZSIvPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9ImJsYWNrIi8+PC9zdmc+" x="0" y="0" width="10" height="10"/></pattern></defs><rect width="100" height="100" fill="url(%23noise)"/></svg>');
+    opacity: 0.05;
+}
+
+#weather-overlay.rainy {
+    background-color: rgba(0, 50, 100, 0.1);
+    backdrop-filter: grayscale(0.3) saturate(1.1);
+}
+
+#weather-overlay.snowy {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: brightness(1.1) contrast(1.2);
+}
+
+#weather-overlay.foggy {
+    background-color: rgba(150, 150, 150, 0.2);
+    backdrop-filter: contrast(0.8) saturate(0.8);
+}
+
+#weather-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+#weather-controls.hidden {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
+
+#weather-controls .clear-btn {
+    background-color: transparent;
+    color: var(--primary-color);
+}
+#weather-controls .clear-btn:hover {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    section {
+        transition: none;
+    }
+    #weather-overlay {
+        transition: none;
+    }
+}

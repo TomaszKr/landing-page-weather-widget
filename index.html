@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Widget</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main>
+        <section id="statement">
+            <h1>Your website looks the same<br>no matter what’s happening outside.</h1>
+            <p>That’s unnatural.</p>
+        </section>
+        <section id="problem" class="hidden">
+            <h2>Problem</h2>
+            <p>Weather affects mood, behavior and decisions.</p>
+            <p>Websites ignore it completely.</p>
+        </section>
+        <section id="solution" class="hidden">
+            <h2>Solution</h2>
+            <p>Weather Widget synchronizes your website<br>with real-world weather in real time.</p>
+        </section>
+        <section id="how-it-works" class="hidden">
+            <h2>How it works</h2>
+            <p>One script.<br>No dependencies.<br>No configuration.</p>
+            <p>The widget detects location,<br>fetches weather data<br>and adjusts visuals instantly.</p>
+        </section>
+        <section id="live-preview" class="hidden">
+            <h2>Live Preview</h2>
+            <div class="preview-container">
+                <form id="url-form">
+                    <input type="url" id="url-input" placeholder="Enter URL to preview" required>
+                    <button type="submit">Load preview</button>
+                </form>
+                <div id="iframe-wrapper" class="iframe-wrapper">
+                    <div id="weather-overlay"></div>
+                    <iframe id="preview-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
+                </div>
+                <div id="weather-controls" class="hidden">
+                    <button data-weather="sunny">Sunny</button>
+                    <button data-weather="rainy">Rainy</button>
+                    <button data-weather="snowy">Snowy</button>
+                    <button data-weather="foggy">Foggy</button>
+                    <button data-weather="clear" class="clear-btn">Clear</button>
+                </div>
+            </div>
+        </section>
+        <section id="cta" class="hidden">
+            <h2>CTA</h2>
+            <p>Get early access to the widget.</p>
+        </section>
+    </main>
+    <script src="main.js"></script>
+</body>
+</html>
