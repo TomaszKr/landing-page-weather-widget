@@ -257,15 +257,15 @@ button:hover {
 .weather-overlay .fog.active .fog-layer {
   position: absolute;
   inset: -10%;
-  opacity: 0.35;
+  opacity: 0.7;
 
   background-image:
     linear-gradient(
       to right,
       rgba(255,255,255,0) 0%,
-      rgba(255,255,255,0.08) 20%,
-      rgba(255,255,255,0.12) 50%,
-      rgba(255,255,255,0.08) 80%,
+      rgba(255,255,255,0.15) 20%,
+      rgba(255,255,255,0.25) 50%,
+      rgba(255,255,255,0.15) 80%,
       rgba(255,255,255,0) 100%
     );
 
@@ -283,7 +283,7 @@ button:hover {
   background-image: inherit;
   background-size: 180% 100%;
   filter: blur(8px);
-  opacity: 0.6;
+  opacity: 0.8;
 }
 
 .weather-overlay .fog.active .fog-layer::before {
