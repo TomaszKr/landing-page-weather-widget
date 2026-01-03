@@ -250,31 +250,33 @@ button:hover {
 }
 
 /* Fog Effect */
-
-/* Fog Effect */
-.foggy.active {
+.weather-overlay .fog.active {
   backdrop-filter: contrast(0.96) saturate(0.95);
 }
 
-.foggy .fog-layer {
+.weather-overlay .fog.active .fog-layer {
   position: absolute;
   inset: -10%;
   opacity: 0.35;
-  background-image: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.08) 20%,
-    rgba(255, 255, 255, 0.12) 50%,
-    rgba(255, 255, 255, 0.08) 80%,
-    rgba(255, 255, 255, 0) 100%
-  );
+
+  background-image:
+    linear-gradient(
+      to right,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0.08) 20%,
+      rgba(255,255,255,0.12) 50%,
+      rgba(255,255,255,0.08) 80%,
+      rgba(255,255,255,0) 100%
+    );
+
   background-size: 200% 100%;
   animation: fog-drift 60s linear infinite;
+
   filter: blur(6px);
 }
 
-.foggy .fog-layer::before,
-.foggy .fog-layer::after {
+.weather-overlay .fog.active .fog-layer::before,
+.weather-overlay .fog.active .fog-layer::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -284,12 +286,12 @@ button:hover {
   opacity: 0.6;
 }
 
-.foggy .fog-layer::before {
+.weather-overlay .fog.active .fog-layer::before {
   top: 15%;
   animation-duration: 80s;
 }
 
-.foggy .fog-layer::after {
+.weather-overlay .fog.active .fog-layer::after {
   top: 55%;
   animation-duration: 100s;
 }
@@ -360,7 +362,7 @@ button:hover {
         animation: none;
     }
 
-    .foggy .fog-layer {
+    .weather-overlay .fog.active .fog-layer {
         animation: none;
         opacity: 0.25;
     }
