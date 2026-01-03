@@ -64,8 +64,8 @@ class RainEffect {
         const deltaTime = (timestamp - this.lastTime) / 16.67; // Normalize to 60fps
         this.lastTime = timestamp;
 
-        // Fading background with higher transparency for less intense streaks
-        this.ctx.fillStyle = 'rgba(240, 245, 255, 0.03)';
+        // Fading background with a higher alpha to make streaks disappear faster
+        this.ctx.fillStyle = 'rgba(240, 245, 255, 0.1)';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         for (let i = this.drops.length - 1; i >= 0; i--) {
