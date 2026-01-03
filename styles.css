@@ -146,39 +146,83 @@ button:hover {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    transition: opacity 0.5s, backdrop-filter 0.5s;
     z-index: 10;
+    overflow: hidden;
 }
 
-#weather-overlay.sunny {
-    background-color: rgba(255, 180, 50, 0.1);
-    backdrop-filter: sepia(0.2) saturate(1.2);
+#weather-overlay > div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 500ms ease-in-out;
 }
 
-#weather-overlay.rainy::before {
+#weather-overlay > div.active {
+    opacity: 1;
+}
+
+/* Keyframes for animations */
+@keyframes rain-fall {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 20% 100%; }
+}
+
+@keyframes snow-fall {
+    0% { background-position: 0 0, 0 0, 0 0; }
+    100% { background-position: 50vh 50vh, 100vh 100vh, 75vh 75vh; }
+}
+
+/* Rain Effect */
+.rain::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="noise" patternUnits="userSpaceOnUse" width="10" height="10"><image xlink:href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSJ3aGl0ZSIvPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9ImJsYWNrIi8+PC9zdmc+" x="0" y="0" width="10" height="10"/></pattern></defs><rect width="100" height="100" fill="url(%23noise)"/></svg>');
-    opacity: 0.05;
+    background-image:
+        linear-gradient(transparent, rgba(0,0,0,0.1) 70%),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 100%);
+    background-size: 100% 100%, 3px 100%;
+    animation: rain-fall 1s linear infinite;
+    backdrop-filter: blur(1px);
 }
 
-#weather-overlay.rainy {
-    background-color: rgba(0, 50, 100, 0.1);
-    backdrop-filter: grayscale(0.3) saturate(1.1);
+/* Snow Effect */
+.snow::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1.1px),
+        radial-gradient(circle, rgba(255,255,255,0.7) 2px, transparent 2.2px),
+        radial-gradient(circle, rgba(255,255,255,0.6) 1.5px, transparent 1.7px);
+    background-repeat: repeat;
+    background-size: 200px 200px, 150px 150px, 250px 250px;
+    animation: snow-fall 15s linear infinite;
 }
 
-#weather-overlay.snowy {
-    background-color: rgba(255, 255, 255, 0.1);
-    backdrop-filter: brightness(1.1) contrast(1.2);
+/* Sun Effect */
+.sunny::after {
+    content: '';
+    position: absolute;
+    top: -10%;
+    left: -10%;
+    width: 120%;
+    height: 120%;
+    background-image: radial-gradient(circle at center, rgba(255, 220, 150, 0.15) 0%, rgba(255, 220, 150, 0) 70%);
+    opacity: 0.9;
 }
 
-#weather-overlay.foggy {
-    background-color: rgba(150, 150, 150, 0.2);
-    backdrop-filter: contrast(0.8) saturate(0.8);
+/* Fog Effect */
+.foggy {
+    backdrop-filter: contrast(0.95) blur(0.5px);
 }
 
 #weather-controls {
@@ -206,10 +250,13 @@ button:hover {
 
 
 @media (prefers-reduced-motion: reduce) {
-    section {
+    section,
+    #weather-overlay > div {
         transition: none;
     }
-    #weather-overlay {
-        transition: none;
+
+    .rain::before,
+    .snow::before {
+        animation: none;
     }
 }
