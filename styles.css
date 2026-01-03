@@ -29,7 +29,6 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     width: 100%;
     padding: 10vh 5vw;
 }
@@ -79,6 +78,8 @@ p {
 
 #statement {
     min-height: 80vh;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 #live-preview .preview-container {
