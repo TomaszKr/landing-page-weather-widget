@@ -33,8 +33,8 @@ class RainEffect {
     }
 
     createDrops() {
-        // Reduce drop count for a subtler effect
-        const count = Math.floor(this.canvas.width / 10);
+        // Further reduce drop count for an even subtler effect
+        const count = Math.floor(this.canvas.width / 20);
         for (let i = 0; i < count; i++) {
             this.drops.push(this.createDrop());
         }
@@ -45,17 +45,16 @@ class RainEffect {
         return {
             x: isNew ? Math.random() * this.canvas.width : x,
             y: isNew ? Math.random() * this.canvas.height : y,
-            // Smaller radius for finer drops
-            radius: Math.random() * 1.5 + 0.5,
-            // Velocity
+            radius: Math.random() * 1.2 + 0.5, // Even smaller drops
+            // Velocity - significantly slower
             vx: 0,
-            vy: Math.random() * 2 + 1,
-            // Acceleration based on "mass" (radius)
-            accel: 0.05 + (Math.random() * 0.1),
+            vy: Math.random() * 1 + 0.5,
+            // Acceleration - significantly lower
+            accel: 0.01 + (Math.random() * 0.05),
             // Horizontal wobble
             wobble: Math.random() * Math.PI * 2,
             wobbleSpeed: 0.1 + Math.random() * 0.2,
-            wobbleAmount: 0.5 + Math.random() * 0.5,
+            wobbleAmount: 0.2 + Math.random() * 0.3,
         };
     }
 
@@ -79,10 +78,10 @@ class RainEffect {
             drop.x += drop.vx * deltaTime;
             drop.y += drop.vy * deltaTime;
 
-            // Draw the drop "head" with lower opacity
+            // Draw the drop "head" with much lower opacity for better visibility
             this.ctx.beginPath();
             this.ctx.arc(drop.x, drop.y, drop.radius, 0, Math.PI * 2);
-            this.ctx.fillStyle = `rgba(200, 210, 220, ${0.3 + (drop.radius / 5)})`;
+            this.ctx.fillStyle = `rgba(200, 210, 220, ${0.2 + (drop.radius / 6)})`;
             this.ctx.fill();
 
             // Reset drop if it's off-screen
