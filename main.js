@@ -11,7 +11,7 @@
  */
 class WeatherController {
     /**
-     * @param {HTMLElement} overlayElement - The element to apply weather effect classes to.
+     * @param {HTMLElement} overlayElement - The container for the weather effect layers.
      * @param {HTMLElement} controlsElement - The container for the weather control buttons.
      */
     constructor(overlayElement, controlsElement) {
@@ -20,8 +20,13 @@ class WeatherController {
         }
         this.overlay = overlayElement;
         this.controls = controlsElement;
-        this.currentWeather = 'clear'; // Initial state
-        this.weatherClasses = ['sunny', 'rainy', 'snowy', 'foggy'];
+        this.currentWeather = 'clear';
+        this.weatherEffects = new Map();
+
+        // Discover and map all available weather effect elements
+        this.overlay.querySelectorAll('[data-weather]').forEach(elem => {
+            this.weatherEffects.set(elem.dataset.weather, elem);
+        });
 
         this.init();
     }
@@ -40,22 +45,31 @@ class WeatherController {
     }
 
     /**
-     * Sets the weather state and updates the overlay's class list.
-     * @param {string} weather - The name of the weather effect to apply (e.g., 'sunny', 'clear').
+     * Sets the active weather effect, ensuring smooth transitions.
+     * @param {string} weather - The name of the weather effect to activate (e.g., 'rainy', 'clear').
      */
     setWeather(weather) {
         if (this.currentWeather === weather) return;
 
-        // Clean up previous weather classes
-        this.overlay.classList.remove(...this.weatherClasses);
+        // Deactivate the current effect
+        const currentEffect = this.weatherEffects.get(this.currentWeather);
+        if (currentEffect) {
+            currentEffect.classList.remove('active');
+        }
 
-        // Apply new class if it's a valid weather effect
-        if (this.weatherClasses.includes(weather)) {
-            this.overlay.classList.add(weather);
+        // Activate the new effect
+        const newEffect = this.weatherEffects.get(weather);
+        if (newEffect) {
+            newEffect.classList.add('active');
         }
 
         this.currentWeather = weather;
         console.log(`Weather state changed to: ${this.currentWeather}`);
+
+        // Handle the 'clear' state separately
+        if (weather === 'clear') {
+             this.weatherEffects.forEach(effect => effect.classList.remove('active'));
+        }
     }
 
     /**

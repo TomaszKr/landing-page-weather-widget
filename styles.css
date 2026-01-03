@@ -147,39 +147,181 @@ button:hover {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    transition: opacity 0.5s, backdrop-filter 0.5s;
     z-index: 10;
+    overflow: hidden;
 }
 
-#weather-overlay.sunny {
-    background-color: rgba(255, 180, 50, 0.1);
-    backdrop-filter: sepia(0.2) saturate(1.2);
+#weather-overlay > div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 500ms ease-in-out;
 }
 
-#weather-overlay.rainy::before {
+#weather-overlay > div.active {
+    opacity: 1;
+}
+
+/* Keyframes for animations */
+@keyframes rain-streaks-fall {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100vh; }
+}
+
+@keyframes storm-particles-fall {
+    0% { background-position: 0 0, 0 0, 0 0; }
+    100% { background-position: 0 100vh, 0 80vh, 0 60vh; }
+}
+
+@keyframes snow-fall {
+    0% { background-position: 0 0, 0 0, 0 0; }
+    100% { background-position: 50vh 50vh, 100vh 100vh, 75vh 75vh; }
+}
+
+
+@keyframes fog-drift {
+  from {
+    background-position: 0% 0%;
+  }
+  to {
+    background-position: 200% 0%;
+  }
+}
+
+@keyframes lightning-flash {
+    0%, 100% { opacity: 0; }
+    5% { opacity: 0; }
+    6% { opacity: 1; }
+    7% { opacity: 0; }
+    8% { opacity: 1; }
+    12% { opacity: 0; }
+    25% { opacity: 0; }
+}
+
+/* Rain Effect */
+.rain::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="noise" patternUnits="userSpaceOnUse" width="10" height="10"><image xlink:href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSJ3aGl0ZSIvPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9ImJsYWNrIi8+PC9zdmc+" x="0" y="0" width="10" height="10"/></pattern></defs><rect width="100" height="100" fill="url(%23noise)"/></svg>');
-    opacity: 0.05;
+    background-image: linear-gradient(
+        to bottom,
+        rgba(200, 210, 220, 0) 0%,
+        rgba(200, 210, 220, 0.5) 100%
+    );
+    background-repeat: repeat-x;
+    background-size: 1px 50%;
+    animation: rain-streaks-fall 1s linear infinite;
+    backdrop-filter: blur(1px);
 }
 
-#weather-overlay.rainy {
-    background-color: rgba(0, 50, 100, 0.1);
-    backdrop-filter: grayscale(0.3) saturate(1.1);
+/* Snow Effect */
+.snow::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1.1px),
+        radial-gradient(circle, rgba(255,255,255,0.7) 2px, transparent 2.2px),
+        radial-gradient(circle, rgba(255,255,255,0.6) 1.5px, transparent 1.7px);
+    background-repeat: repeat;
+    background-size: 200px 200px, 150px 150px, 250px 250px;
+    animation: snow-fall 15s linear infinite;
 }
 
-#weather-overlay.snowy {
-    background-color: rgba(255, 255, 255, 0.1);
-    backdrop-filter: brightness(1.1) contrast(1.2);
+/* Sun Effect */
+.sunny::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 100% 0, rgba(255, 220, 180, 1) 0%, transparent 30%);
+    opacity: 0.1;
 }
 
-#weather-overlay.foggy {
-    background-color: rgba(150, 150, 150, 0.2);
-    backdrop-filter: contrast(0.8) saturate(0.8);
+/* Fog Effect */
+
+/* Fog Effect */
+.foggy.active {
+  backdrop-filter: contrast(0.96) saturate(0.95);
+}
+
+.foggy .fog-layer {
+  position: absolute;
+  inset: -10%;
+  opacity: 0.35;
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.08) 20%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.08) 80%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: fog-drift 60s linear infinite;
+  filter: blur(6px);
+}
+
+.foggy .fog-layer::before,
+.foggy .fog-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: inherit;
+  background-size: 180% 100%;
+  filter: blur(8px);
+  opacity: 0.6;
+}
+
+.foggy .fog-layer::before {
+  top: 15%;
+  animation-duration: 80s;
+}
+
+.foggy .fog-layer::after {
+  top: 55%;
+  animation-duration: 100s;
+}
+
+/* Storm Effect */
+.storm::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(circle, rgba(180,190,200,0.9) 1px, transparent 1.1px),
+        radial-gradient(circle, rgba(180,190,200,0.7) 1.5px, transparent 1.7px),
+        radial-gradient(circle, rgba(180,190,200,0.5) 2px, transparent 2.2px);
+    background-repeat: repeat;
+    background-size: 100px 100px, 150px 150px, 200px 200px;
+    animation: storm-particles-fall 0.7s linear infinite;
+    backdrop-filter: blur(1.5px) grayscale(0.2);
+}
+
+.storm::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    opacity: 0;
+    animation: lightning-flash 6s linear infinite;
 }
 
 #weather-controls {
@@ -207,10 +349,19 @@ button:hover {
 
 
 @media (prefers-reduced-motion: reduce) {
-    section {
+    section,
+    #weather-overlay > div {
         transition: none;
     }
-    #weather-overlay {
-        transition: none;
+
+    .rain::before,
+    .snow::before,
+    .storm::after {
+        animation: none;
+    }
+
+    .foggy .fog-layer {
+        animation: none;
+        opacity: 0.25;
     }
 }
