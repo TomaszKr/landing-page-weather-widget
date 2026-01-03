@@ -165,14 +165,35 @@ button:hover {
 }
 
 /* Keyframes for animations */
-@keyframes rain-fall {
-    0% { background-position: 0% 0%; }
-    100% { background-position: 20% 100%; }
+@keyframes rain-streaks-fall {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100vh; }
+}
+
+@keyframes storm-particles-fall {
+    0% { background-position: 0 0, 0 0, 0 0; }
+    100% { background-position: 0 100vh, 0 80vh, 0 60vh; }
 }
 
 @keyframes snow-fall {
     0% { background-position: 0 0, 0 0, 0 0; }
     100% { background-position: 50vh 50vh, 100vh 100vh, 75vh 75vh; }
+}
+
+@keyframes fog-movement {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes lightning-flash {
+    0%, 100% { opacity: 0; }
+    5% { opacity: 0; }
+    6% { opacity: 1; }
+    7% { opacity: 0; }
+    8% { opacity: 1; }
+    12% { opacity: 0; }
+    25% { opacity: 0; }
 }
 
 /* Rain Effect */
@@ -183,11 +204,14 @@ button:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image:
-        linear-gradient(transparent, rgba(0,0,0,0.1) 70%),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 100%);
-    background-size: 100% 100%, 3px 100%;
-    animation: rain-fall 1s linear infinite;
+    background-image: linear-gradient(
+        to bottom,
+        rgba(200, 210, 220, 0) 0%,
+        rgba(200, 210, 220, 0.5) 100%
+    );
+    background-repeat: repeat-x;
+    background-size: 1px 50%;
+    animation: rain-streaks-fall 1s linear infinite;
     backdrop-filter: blur(1px);
 }
 
@@ -209,20 +233,64 @@ button:hover {
 }
 
 /* Sun Effect */
-.sunny::after {
+.sunny::before {
     content: '';
     position: absolute;
-    top: -10%;
-    left: -10%;
-    width: 120%;
-    height: 120%;
-    background-image: radial-gradient(circle at center, rgba(255, 220, 150, 0.15) 0%, rgba(255, 220, 150, 0) 70%);
-    opacity: 0.9;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 100% 0, rgba(255, 220, 180, 1) 0%, transparent 30%);
+    opacity: 0.1;
 }
 
 /* Fog Effect */
 .foggy {
     backdrop-filter: contrast(0.95) blur(0.5px);
+}
+
+.foggy::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(ellipse at 50% 50%, rgba(200, 200, 200, 0.1) 0%, rgba(200, 200, 200, 0) 100%),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)"/></svg>');
+    background-size: 200% 200%;
+    animation: fog-movement 45s ease-in-out infinite;
+}
+
+/* Storm Effect */
+.storm::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(circle, rgba(180,190,200,0.9) 1px, transparent 1.1px),
+        radial-gradient(circle, rgba(180,190,200,0.7) 1.5px, transparent 1.7px),
+        radial-gradient(circle, rgba(180,190,200,0.5) 2px, transparent 2.2px);
+    background-repeat: repeat;
+    background-size: 100px 100px, 150px 150px, 200px 200px;
+    animation: storm-particles-fall 0.7s linear infinite;
+    backdrop-filter: blur(1.5px) grayscale(0.2);
+}
+
+.storm::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    opacity: 0;
+    animation: lightning-flash 6s linear infinite;
 }
 
 #weather-controls {
@@ -256,7 +324,9 @@ button:hover {
     }
 
     .rain::before,
-    .snow::before {
+    .snow::before,
+    .foggy::before,
+    .storm::after {
         animation: none;
     }
 }
