@@ -33,8 +33,7 @@ class RainEffect {
     }
 
     createDrops() {
-        // Further reduce drop count for an even subtler effect
-        const count = Math.floor(this.canvas.width / 20);
+        const count = Math.floor(this.canvas.width / 15); // Adjusted for streak visibility
         for (let i = 0; i < count; i++) {
             this.drops.push(this.createDrop());
         }
@@ -44,51 +43,40 @@ class RainEffect {
         const isNew = x === undefined;
         return {
             x: isNew ? Math.random() * this.canvas.width : x,
-            y: isNew ? Math.random() * this.canvas.height : y,
-            radius: Math.random() * 1.2 + 0.5, // Even smaller drops
-            // Velocity - significantly slower
-            vx: 0,
-            vy: Math.random() * 1 + 0.5,
-            // Acceleration - significantly lower
-            accel: 0.01 + (Math.random() * 0.05),
-            // Horizontal wobble
-            wobble: Math.random() * Math.PI * 2,
-            wobbleSpeed: 0.1 + Math.random() * 0.2,
-            wobbleAmount: 0.2 + Math.random() * 0.3,
+            y: isNew ? Math.random() * this.canvas.height : -20,
+            length: Math.random() * 10 + 5,
+            speed: Math.random() * 2 + 1,
+            opacity: Math.random() * 0.3 + 0.1,
+            width: Math.random() * 0.5 + 0.5,
         };
     }
 
-    animate(timestamp) {
-        if (!this.lastTime) this.lastTime = timestamp;
-        const deltaTime = (timestamp - this.lastTime) / 16.67; // Normalize to 60fps
-        this.lastTime = timestamp;
+    animate() {
+        // Clear the canvas completely each frame for full transparency
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Fading background with a higher alpha to make streaks disappear faster
-        this.ctx.fillStyle = 'rgba(240, 245, 255, 0.1)';
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.drops.forEach(drop => {
+            drop.y += drop.speed;
 
-        for (let i = this.drops.length - 1; i >= 0; i--) {
-            const drop = this.drops[i];
+            // Create a gradient for the streak
+            const gradient = this.ctx.createLinearGradient(drop.x, drop.y, drop.x, drop.y + drop.length);
+            gradient.addColorStop(0, `rgba(200, 210, 220, 0)`);
+            gradient.addColorStop(0.5, `rgba(200, 210, 220, ${drop.opacity})`);
+            gradient.addColorStop(1, `rgba(200, 210, 220, 0)`);
 
-            // Update velocity and position
-            drop.vy += drop.accel * deltaTime;
-            drop.wobble += drop.wobbleSpeed * deltaTime;
-            drop.vx = Math.sin(drop.wobble) * drop.wobbleAmount;
-
-            drop.x += drop.vx * deltaTime;
-            drop.y += drop.vy * deltaTime;
-
-            // Draw the drop "head" with much lower opacity for better visibility
+            // Draw the streak
             this.ctx.beginPath();
-            this.ctx.arc(drop.x, drop.y, drop.radius, 0, Math.PI * 2);
-            this.ctx.fillStyle = `rgba(200, 210, 220, ${0.2 + (drop.radius / 6)})`;
-            this.ctx.fill();
+            this.ctx.moveTo(drop.x, drop.y);
+            this.ctx.lineTo(drop.x, drop.y + drop.length);
+            this.ctx.strokeStyle = gradient;
+            this.ctx.lineWidth = drop.width;
+            this.ctx.stroke();
 
-            // Reset drop if it's off-screen
-            if (drop.y > this.canvas.height + drop.radius) {
-                this.drops[i] = this.createDrop(Math.random() * this.canvas.width, -drop.radius);
+            // Reset drop when it goes off-screen
+            if (drop.y > this.canvas.height) {
+                Object.assign(drop, this.createDrop(Math.random() * this.canvas.width));
             }
-        }
+        });
 
         this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
     }
