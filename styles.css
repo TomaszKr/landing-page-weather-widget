@@ -209,12 +209,6 @@ button:hover {
     height: 100%;
     pointer-events: none;
     z-index: 11; /* Ensure canvas is on top of other effects */
-    opacity: 0;
-    transition: opacity 500ms ease-in-out;
-}
-
-#rain-canvas.active {
-    opacity: 1;
 }
 
 /* Snow Effect */

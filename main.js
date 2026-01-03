@@ -83,7 +83,6 @@ class RainEffect {
 
     start() {
         if (this.animationFrameId) return;
-        this.canvas.classList.add('active');
         this.lastTime = 0;
         this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
     }
@@ -93,7 +92,6 @@ class RainEffect {
         cancelAnimationFrame(this.animationFrameId);
         this.animationFrameId = null;
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.canvas.classList.remove('active');
     }
 }
 
