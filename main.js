@@ -33,7 +33,8 @@ class RainEffect {
     }
 
     createDrops() {
-        const count = Math.floor(this.canvas.width / 4);
+        // Reduce drop count for a subtler effect
+        const count = Math.floor(this.canvas.width / 10);
         for (let i = 0; i < count; i++) {
             this.drops.push(this.createDrop());
         }
@@ -44,7 +45,8 @@ class RainEffect {
         return {
             x: isNew ? Math.random() * this.canvas.width : x,
             y: isNew ? Math.random() * this.canvas.height : y,
-            radius: Math.random() * 2 + 1,
+            // Smaller radius for finer drops
+            radius: Math.random() * 1.5 + 0.5,
             // Velocity
             vx: 0,
             vy: Math.random() * 2 + 1,
@@ -53,7 +55,7 @@ class RainEffect {
             // Horizontal wobble
             wobble: Math.random() * Math.PI * 2,
             wobbleSpeed: 0.1 + Math.random() * 0.2,
-            wobbleAmount: 0.5 + Math.random() * 1.0,
+            wobbleAmount: 0.5 + Math.random() * 0.5,
         };
     }
 
@@ -62,8 +64,8 @@ class RainEffect {
         const deltaTime = (timestamp - this.lastTime) / 16.67; // Normalize to 60fps
         this.lastTime = timestamp;
 
-        // Fading background creates the streak effect
-        this.ctx.fillStyle = 'rgba(240, 245, 255, 0.05)';
+        // Fading background with higher transparency for less intense streaks
+        this.ctx.fillStyle = 'rgba(240, 245, 255, 0.03)';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         for (let i = this.drops.length - 1; i >= 0; i--) {
@@ -77,10 +79,10 @@ class RainEffect {
             drop.x += drop.vx * deltaTime;
             drop.y += drop.vy * deltaTime;
 
-            // Draw the drop "head"
+            // Draw the drop "head" with lower opacity
             this.ctx.beginPath();
             this.ctx.arc(drop.x, drop.y, drop.radius, 0, Math.PI * 2);
-            this.ctx.fillStyle = `rgba(200, 210, 220, ${0.5 + (drop.radius / 4)})`; // More opaque based on size
+            this.ctx.fillStyle = `rgba(200, 210, 220, ${0.3 + (drop.radius / 5)})`;
             this.ctx.fill();
 
             // Reset drop if it's off-screen
