@@ -6,6 +6,109 @@
 'use strict';
 
 /**
+ * @class RainEffect
+ * @description Manages a realistic, canvas-based rain-on-a-window-pane effect.
+ */
+class RainEffect {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.drops = [];
+        this.animationFrameId = null;
+        this.lastTime = 0;
+
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+    }
+
+    resize() {
+        const {
+            width,
+            height
+        } = this.canvas.parentElement.getBoundingClientRect();
+        this.canvas.width = width;
+        this.canvas.height = height;
+        this.drops = [];
+        this.createDrops();
+    }
+
+    createDrops() {
+        const count = Math.floor(this.canvas.width / 4);
+        for (let i = 0; i < count; i++) {
+            this.drops.push(this.createDrop());
+        }
+    }
+
+    createDrop(x, y) {
+        const isNew = x === undefined;
+        return {
+            x: isNew ? Math.random() * this.canvas.width : x,
+            y: isNew ? Math.random() * this.canvas.height : y,
+            radius: Math.random() * 2 + 1,
+            // Velocity
+            vx: 0,
+            vy: Math.random() * 2 + 1,
+            // Acceleration based on "mass" (radius)
+            accel: 0.05 + (Math.random() * 0.1),
+            // Horizontal wobble
+            wobble: Math.random() * Math.PI * 2,
+            wobbleSpeed: 0.1 + Math.random() * 0.2,
+            wobbleAmount: 0.5 + Math.random() * 1.0,
+        };
+    }
+
+    animate(timestamp) {
+        if (!this.lastTime) this.lastTime = timestamp;
+        const deltaTime = (timestamp - this.lastTime) / 16.67; // Normalize to 60fps
+        this.lastTime = timestamp;
+
+        // Fading background creates the streak effect
+        this.ctx.fillStyle = 'rgba(240, 245, 255, 0.05)';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        for (let i = this.drops.length - 1; i >= 0; i--) {
+            const drop = this.drops[i];
+
+            // Update velocity and position
+            drop.vy += drop.accel * deltaTime;
+            drop.wobble += drop.wobbleSpeed * deltaTime;
+            drop.vx = Math.sin(drop.wobble) * drop.wobbleAmount;
+
+            drop.x += drop.vx * deltaTime;
+            drop.y += drop.vy * deltaTime;
+
+            // Draw the drop "head"
+            this.ctx.beginPath();
+            this.ctx.arc(drop.x, drop.y, drop.radius, 0, Math.PI * 2);
+            this.ctx.fillStyle = `rgba(200, 210, 220, ${0.5 + (drop.radius / 4)})`; // More opaque based on size
+            this.ctx.fill();
+
+            // Reset drop if it's off-screen
+            if (drop.y > this.canvas.height + drop.radius) {
+                this.drops[i] = this.createDrop(Math.random() * this.canvas.width, -drop.radius);
+            }
+        }
+
+        this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
+    }
+
+    start() {
+        if (this.animationFrameId) return;
+        this.canvas.classList.add('active');
+        this.lastTime = 0;
+        this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
+    }
+
+    stop() {
+        if (!this.animationFrameId) return;
+        cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.canvas.classList.remove('active');
+    }
+}
+
+/**
  * Manages the state and application of weather effects on the preview iframe.
  * @class
  */
@@ -22,6 +125,8 @@ class WeatherController {
         this.controls = controlsElement;
         this.currentWeather = 'clear';
         this.weatherEffects = new Map();
+        this.rainEffect = null;
+
 
         // Discover and map all available weather effect elements
         this.overlay.querySelectorAll('[data-weather]').forEach(elem => {
@@ -29,6 +134,12 @@ class WeatherController {
         });
 
         this.init();
+
+        // Initialize Rain Effect
+        const rainCanvas = document.getElementById('rain-canvas');
+        if (rainCanvas) {
+            this.rainEffect = new RainEffect(rainCanvas);
+        }
     }
 
     /**
@@ -68,7 +179,12 @@ class WeatherController {
 
         // Handle the 'clear' state separately
         if (weather === 'clear') {
-             this.weatherEffects.forEach(effect => effect.classList.remove('active'));
+            this.weatherEffects.forEach(effect => effect.classList.remove('active'));
+            if (this.rainEffect) this.rainEffect.stop();
+        } else if (weather === 'rainy') {
+            if (this.rainEffect) this.rainEffect.start();
+        } else {
+            if (this.rainEffect) this.rainEffect.stop();
         }
     }
 
