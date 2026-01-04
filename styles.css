@@ -166,168 +166,76 @@ button:hover {
 }
 
 /* Keyframes for animations */
-@keyframes rain-streaks-fall {
-    0% { background-position: 0 0, 0 0, 0 0; }
-    100% { background-position: 0 200vh, 0 160vh, 0 120vh; }
+@keyframes noise-animation {
+    0% { transform: translate(0, 0); }
+    10% { transform: translate(-5%, -5%); }
+    20% { transform: translate(-10%, 5%); }
+    30% { transform: translate(5%, -10%); }
+    40% { transform: translate(-5%, 15%); }
+    50% { transform: translate(-10%, 5%); }
+    60% { transform: translate(15%, 0); }
+    70% { transform: translate(0, 10%); }
+    80% { transform: translate(-15%, 0); }
+    90% { transform: translate(10%, 5%); }
+    100% { transform: translate(5%, 0); }
 }
 
-@keyframes storm-particles-fall {
-    0% { background-position: 0 0, 0 0, 0 0; }
-    100% { background-position: 0 200vh, 0 160vh, 0 120vh; }
-}
+/* --- WEATHER EFFECTS --- */
 
-@keyframes snow-fall {
-    0% { background-position: 0 0, 0 0, 0 0; }
-    100% { background-position: 50vh 50vh, 100vh 100vh, 75vh 75vh; }
-}
-
-
-@keyframes fog-drift {
-  from {
-    background-position: 0% 0%;
-  }
-  to {
-    background-position: 200% 0%;
-  }
-}
-
-@keyframes lightning-flash {
-    0%, 100% { opacity: 0; }
-    5% { opacity: 0; }
-    6% { opacity: 1; }
-    7% { opacity: 0; }
-    8% { opacity: 1; }
-    12% { opacity: 0; }
-    25% { opacity: 0; }
-}
-
-@keyframes corner-flare {
-    0%, 100% {
-        opacity: 0;
-        transform: scale(0.5);
-    }
-    10%, 30% {
-        opacity: 0.2;
-        transform: scale(1);
-    }
-    20% {
-        opacity: 0.4;
-        transform: scale(1.2);
-    }
-    40% {
-        opacity: 0;
-        transform: scale(1.5);
-    }
-}
-
-/* Rain Effect */
-.rain::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image:
-        radial-gradient(circle, rgba(200,210,220,0.7) 2px, transparent 2.5px),
-        radial-gradient(circle, rgba(200,210,220,0.6) 2.5px, transparent 3px),
-        radial-gradient(circle, rgba(200,210,220,0.5) 3px, transparent 3.5px);
-    background-repeat: repeat;
-    background-size: 200px 200px, 250px 250px, 300px 300px;
-    animation: rain-streaks-fall 1.5s linear infinite;
-}
-
-/* Snow Effect */
-.snow::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image:
-        radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1.1px),
-        radial-gradient(circle, rgba(255,255,255,0.7) 2px, transparent 2.2px),
-        radial-gradient(circle, rgba(255,255,255,0.6) 1.5px, transparent 1.7px);
-    background-repeat: repeat;
-    background-size: 200px 200px, 150px 150px, 250px 250px;
-    animation: snow-fall 15s linear infinite;
-}
-
-/* Sun Effect */
+/* Sunny Effect: Warmer light temperature */
 .sunny.active {
-    backdrop-filter: sepia(0.4) brightness(1.05);
+    backdrop-filter: sepia(0.2) brightness(1.05) saturate(1.1);
 }
 
-.sunny::before {
+/* Rain Effect: Cooler balance + subtle noise */
+.rain.active {
+    backdrop-filter: saturate(0.8) contrast(0.9);
+}
+
+.rain.active::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 230, 200, 0.05) 0%, transparent 70%);
+    background-image: url('data:image/svg+xml,...'); /* SVG noise */
+    background:
+        linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(180,200,220,0.1) 100%),
+        linear-gradient(to right, rgba(180,200,220,0.1) 0%, rgba(0,0,0,0) 100%);
+    opacity: 0.3;
 }
 
-.sunny::after {
+.rain.active::after {
+    content: '';
+    position: absolute;
+    top: -10%;
+    left: -10%;
+    width: 120%;
+    height: 120%;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)"/></svg>');
+    opacity: 0.03;
+    animation: noise-animation 1s steps(2, end) infinite;
+}
+
+/* Snow Effect: Higher contrast + brightness */
+.snow.active {
+    backdrop-filter: contrast(1.1) brightness(1.1);
+}
+
+.snow.active::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(
-        circle at 0% 0%,
-        rgba(255, 255, 220, 0.5) 0%,
-        transparent 20%
-    );
-    opacity: 0;
-    animation: corner-flare 5s ease-in-out infinite;
-    animation-delay: 1s;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05), transparent 60%);
 }
 
-/* Fog Effect */
-.foggy .fog-layer {
-  position: absolute;
-  inset: 0;
-  opacity: 0.7;
-  background-image:
-    radial-gradient(ellipse, rgba(255, 255, 255, 0.1) 0%, transparent 70%),
-    radial-gradient(ellipse, rgba(255, 255, 255, 0.05) 0%, transparent 60%),
-    radial-gradient(ellipse, rgba(255, 255, 255, 0.08) 0%, transparent 80%);
-  background-size: 300px 200px, 400px 150px, 250px 180px;
-  background-repeat: repeat;
-  animation: fog-drift 5s linear infinite;
-  filter: blur(2px);
-}
-
-/* Storm Effect */
-.storm::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image:
-        radial-gradient(circle, rgba(180,190,200,0.6) 3px, transparent 3.5px),
-        radial-gradient(circle, rgba(180,190,200,0.5) 4px, transparent 4.5px),
-        radial-gradient(circle, rgba(180,190,200,0.4) 5px, transparent 5.5px);
-    background-repeat: repeat;
-    background-size: 300px 300px, 400px 400px, 500px 500px;
-    animation: storm-particles-fall 2s linear infinite;
-}
-
-.storm::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #ffffff;
-    opacity: 0;
-    animation: lightning-flash 6s linear infinite;
+/* Fog Effect: Lowered contrast */
+.fog.active {
+    backdrop-filter: contrast(0.8) saturate(0.9);
 }
 
 #weather-controls {
@@ -360,14 +268,7 @@ button:hover {
         transition: none;
     }
 
-    .rain::before,
-    .snow::before,
-    .storm::after {
+    .rain.active::after {
         animation: none;
-    }
-
-    .foggy .fog-layer {
-        animation: none;
-        opacity: 0.25;
     }
 }
