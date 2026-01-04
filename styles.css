@@ -167,13 +167,13 @@ button:hover {
 
 /* Keyframes for animations */
 @keyframes rain-streaks-fall {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 100vh; }
+    0% { background-position: 0 0, 0 0, 0 0; }
+    100% { background-position: 0 200vh, 0 160vh, 0 120vh; }
 }
 
 @keyframes storm-particles-fall {
     0% { background-position: 0 0, 0 0, 0 0; }
-    100% { background-position: 0 100vh, 0 80vh, 0 60vh; }
+    100% { background-position: 0 200vh, 0 160vh, 0 120vh; }
 }
 
 @keyframes snow-fall {
@@ -220,14 +220,21 @@ button:hover {
     }
 }
 
-#rain-canvas {
+/* Rain Effect */
+.rain::before {
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none;
-    z-index: 11; /* Ensure canvas is on top of other effects */
+    background-image:
+        radial-gradient(circle, rgba(200,210,220,0.7) 2px, transparent 2.5px),
+        radial-gradient(circle, rgba(200,210,220,0.6) 2.5px, transparent 3px),
+        radial-gradient(circle, rgba(200,210,220,0.5) 3px, transparent 3.5px);
+    background-repeat: repeat;
+    background-size: 200px 200px, 250px 250px, 300px 300px;
+    animation: rain-streaks-fall 1.5s linear infinite;
 }
 
 /* Snow Effect */
@@ -283,7 +290,7 @@ button:hover {
 .foggy .fog-layer {
   position: absolute;
   inset: 0;
-  opacity: 0.3;
+  opacity: 0.7;
   background-image:
     radial-gradient(ellipse, rgba(255, 255, 255, 0.1) 0%, transparent 70%),
     radial-gradient(ellipse, rgba(255, 255, 255, 0.05) 0%, transparent 60%),
@@ -303,13 +310,12 @@ button:hover {
     width: 100%;
     height: 100%;
     background-image:
-        radial-gradient(circle, rgba(180,190,200,0.9) 1px, transparent 1.1px),
-        radial-gradient(circle, rgba(180,190,200,0.7) 1.5px, transparent 1.7px),
-        radial-gradient(circle, rgba(180,190,200,0.5) 2px, transparent 2.2px);
+        radial-gradient(circle, rgba(180,190,200,0.6) 3px, transparent 3.5px),
+        radial-gradient(circle, rgba(180,190,200,0.5) 4px, transparent 4.5px),
+        radial-gradient(circle, rgba(180,190,200,0.4) 5px, transparent 5.5px);
     background-repeat: repeat;
-    background-size: 100px 100px, 150px 150px, 200px 200px;
-    animation: storm-particles-fall 0.7s linear infinite;
-    backdrop-filter: blur(1.5px) grayscale(0.2);
+    background-size: 300px 300px, 400px 400px, 500px 500px;
+    animation: storm-particles-fall 2s linear infinite;
 }
 
 .storm::after {

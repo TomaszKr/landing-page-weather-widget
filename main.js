@@ -169,7 +169,7 @@ class WeatherController {
             this.weatherEffects.forEach(effect => effect.classList.remove('active'));
             if (this.rainEffect) this.rainEffect.stop();
         } else if (weather === 'rainy') {
-            if (this.rainEffect) this.rainEffect.start();
+            // Rain effect now uses CSS instead of canvas
         } else {
             if (this.rainEffect) this.rainEffect.stop();
         }
