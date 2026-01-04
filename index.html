@@ -9,22 +9,19 @@
 <body>
     <main>
         <section id="statement">
-            <h1>Your website looks the same<br>no matter what’s happening outside.</h1>
+            <h1>Your website looks the same no matter what’s happening outside.</h1>
             <p>That’s unnatural.</p>
         </section>
         <section id="problem" class="hidden">
-            <h2>Problem</h2>
             <p>Weather affects mood, behavior and decisions.</p>
             <p>Websites ignore it completely.</p>
         </section>
         <section id="solution" class="hidden">
-            <h2>Solution</h2>
-            <p>Weather Widget synchronizes your website<br>with real-world weather in real time.</p>
+            <p>Weather Widget synchronizes your website with real-world weather in real time.</p>
         </section>
         <section id="how-it-works" class="hidden">
-            <h2>How it works</h2>
             <p>One script.<br>No dependencies.<br>No configuration.</p>
-            <p>The widget detects location,<br>fetches weather data<br>and adjusts visuals instantly.</p>
+            <p>The widget detects location, fetches weather data and adjusts visuals instantly.</p>
         </section>
         <section id="live-preview" class="hidden">
             <h2>Live Preview</h2>
@@ -35,12 +32,10 @@
                 </form>
                 <div id="iframe-wrapper" class="iframe-wrapper">
                     <div id="weather-overlay">
-                        <canvas id="rain-canvas"></canvas>
+                        <div class="sunny" data-weather="sunny"></div>
                         <div class="rain" data-weather="rainy"></div>
                         <div class="snow" data-weather="snowy"></div>
-                        <div class="sunny" data-weather="sunny"></div>
-                        <div class="foggy" data-weather="foggy"><div class="fog-layer"></div></div>
-                        <div class="storm" data-weather="storm"></div>
+                        <div class="fog" data-weather="foggy"></div>
                     </div>
                     <iframe id="preview-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
                 </div>
@@ -49,13 +44,11 @@
                     <button data-weather="rainy">Rainy</button>
                     <button data-weather="snowy">Snowy</button>
                     <button data-weather="foggy">Foggy</button>
-                    <button data-weather="storm">Storm</button>
                     <button data-weather="clear" class="clear-btn">Clear</button>
                 </div>
             </div>
         </section>
         <section id="cta" class="hidden">
-            <h2>CTA</h2>
             <p>Get early access to the widget.</p>
         </section>
     </main>

@@ -6,96 +6,6 @@
 'use strict';
 
 /**
- * @class RainEffect
- * @description Manages a realistic, canvas-based rain-on-a-window-pane effect.
- */
-class RainEffect {
-    constructor(canvas) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext('2d');
-        this.drops = [];
-        this.animationFrameId = null;
-        this.lastTime = 0;
-
-        this.resize();
-        window.addEventListener('resize', () => this.resize());
-    }
-
-    resize() {
-        const {
-            width,
-            height
-        } = this.canvas.parentElement.getBoundingClientRect();
-        this.canvas.width = width;
-        this.canvas.height = height;
-        this.drops = [];
-        this.createDrops();
-    }
-
-    createDrops() {
-        const count = Math.floor(this.canvas.width / 15); // Adjusted for streak visibility
-        for (let i = 0; i < count; i++) {
-            this.drops.push(this.createDrop());
-        }
-    }
-
-    createDrop(x, y) {
-        const isNew = x === undefined;
-        return {
-            x: isNew ? Math.random() * this.canvas.width : x,
-            y: isNew ? Math.random() * this.canvas.height : -20,
-            length: Math.random() * 10 + 5,
-            speed: Math.random() * 2 + 1,
-            opacity: Math.random() * 0.3 + 0.1,
-            width: Math.random() * 0.5 + 0.5,
-        };
-    }
-
-    animate() {
-        // Clear the canvas completely each frame for full transparency
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        this.drops.forEach(drop => {
-            drop.y += drop.speed;
-
-            // Create a gradient for the streak
-            const gradient = this.ctx.createLinearGradient(drop.x, drop.y, drop.x, drop.y + drop.length);
-            gradient.addColorStop(0, `rgba(200, 210, 220, 0)`);
-            gradient.addColorStop(0.5, `rgba(200, 210, 220, ${drop.opacity})`);
-            gradient.addColorStop(1, `rgba(200, 210, 220, 0)`);
-
-            // Draw the streak
-            this.ctx.beginPath();
-            this.ctx.moveTo(drop.x, drop.y);
-            this.ctx.lineTo(drop.x, drop.y + drop.length);
-            this.ctx.strokeStyle = gradient;
-            this.ctx.lineWidth = drop.width;
-            this.ctx.stroke();
-
-            // Reset drop when it goes off-screen
-            if (drop.y > this.canvas.height) {
-                Object.assign(drop, this.createDrop(Math.random() * this.canvas.width));
-            }
-        });
-
-        this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
-    }
-
-    start() {
-        if (this.animationFrameId) return;
-        this.lastTime = 0;
-        this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
-    }
-
-    stop() {
-        if (!this.animationFrameId) return;
-        cancelAnimationFrame(this.animationFrameId);
-        this.animationFrameId = null;
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    }
-}
-
-/**
  * Manages the state and application of weather effects on the preview iframe.
  * @class
  */
@@ -112,8 +22,6 @@ class WeatherController {
         this.controls = controlsElement;
         this.currentWeather = 'clear';
         this.weatherEffects = new Map();
-        this.rainEffect = null;
-
 
         // Discover and map all available weather effect elements
         this.overlay.querySelectorAll('[data-weather]').forEach(elem => {
@@ -121,12 +29,6 @@ class WeatherController {
         });
 
         this.init();
-
-        // Initialize Rain Effect
-        const rainCanvas = document.getElementById('rain-canvas');
-        if (rainCanvas) {
-            this.rainEffect = new RainEffect(rainCanvas);
-        }
     }
 
     /**
@@ -149,30 +51,19 @@ class WeatherController {
     setWeather(weather) {
         if (this.currentWeather === weather) return;
 
-        // Deactivate the current effect
-        const currentEffect = this.weatherEffects.get(this.currentWeather);
-        if (currentEffect) {
-            currentEffect.classList.remove('active');
-        }
+        // Deactivate all effects
+        this.weatherEffects.forEach(effect => effect.classList.remove('active'));
 
         // Activate the new effect
-        const newEffect = this.weatherEffects.get(weather);
-        if (newEffect) {
-            newEffect.classList.add('active');
+        if (weather !== 'clear') {
+            const newEffect = this.weatherEffects.get(weather);
+            if (newEffect) {
+                newEffect.classList.add('active');
+            }
         }
 
         this.currentWeather = weather;
         console.log(`Weather state changed to: ${this.currentWeather}`);
-
-        // Handle the 'clear' state separately
-        if (weather === 'clear') {
-            this.weatherEffects.forEach(effect => effect.classList.remove('active'));
-            if (this.rainEffect) this.rainEffect.stop();
-        } else if (weather === 'rainy') {
-            // Rain effect now uses CSS instead of canvas
-        } else {
-            if (this.rainEffect) this.rainEffect.stop();
-        }
     }
 
     /**
