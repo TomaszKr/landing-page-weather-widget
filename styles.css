@@ -1,11 +1,10 @@
+/* 1. Reset and Globals */
 :root {
     --bg-color: #0a0a0a;
     --text-color: #e0e0e0;
-    --primary-color: #00ff99;
-    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    --base-font-size: clamp(1rem, 2.5vw, 1.5rem);
-    --h1-font-size: clamp(2.5rem, 8vw, 5rem);
-    --h2-font-size: clamp(1.5rem, 5vw, 2.5rem);
+    --accent-color: #00ff99;
+    --border-color: #333;
+    --input-bg: #1a1a1a;
 }
 
 *, *::before, *::after {
@@ -14,35 +13,53 @@
     padding: 0;
 }
 
-html, body {
-    width: 100%;
-    height: 100%;
+body {
     background-color: var(--bg-color);
     color: var(--text-color);
-    font-family: var(--font-family);
-    font-size: var(--base-font-size);
-    line-height: 1.6;
-    scroll-behavior: smooth;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
 }
 
+/* 2. Typography */
+h1, h2, p {
+    line-height: 1.6;
+}
+
+h1 {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+h2 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 500;
+}
+
+p {
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    max-width: 60ch;
+}
+
+/* 3. Layout */
 main {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-    padding: 10vh 5vw;
 }
 
 section {
     min-height: 100vh;
+    width: 100%;
+    max-width: 1200px;
+    padding: 5vw;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-    max-width: 1200px;
-    margin-bottom: 20vh;
+    border-bottom: 1px solid var(--border-color);
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
@@ -53,321 +70,169 @@ section.visible {
     transform: translateY(0);
 }
 
-h1, h2 {
-    font-weight: 500;
-    margin-bottom: 1rem;
-    text-wrap: balance;
+section:last-child {
+    border-bottom: none;
 }
 
-h1 {
-    font-size: var(--h1-font-size);
-    line-height: 1.1;
-}
-
-h2 {
-    font-size: var(--h2-font-size);
-    color: var(--primary-color);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-}
-
-p {
-    margin-bottom: 1rem;
-    max-width: 60ch;
-}
-
-#statement {
-    min-height: 80vh;
-    opacity: 1;
-    transform: translateY(0);
-}
-
-#live-preview .preview-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#url-form {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-#url-input {
-    min-width: 300px;
-    padding: 10px 15px;
-    border: 1px solid var(--primary-color);
-    background-color: transparent;
-    color: var(--text-color);
+/* 4. UI Elements */
+button, input {
+    font-family: inherit;
     font-size: 1rem;
-}
-
-#url-input:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
+    padding: 0.8em 1.2em;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    transition: background-color 0.2s, border-color 0.2s;
 }
 
 button {
-    padding: 10px 20px;
-    border: 1px solid var(--primary-color);
-    background-color: var(--primary-color);
-    color: var(--bg-color);
-    font-size: 1rem;
-    font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
 }
 
-button:hover {
-    background-color: transparent;
-    color: var(--primary-color);
+button:hover, .active-weather {
+    background-color: var(--border-color);
+    border-color: var(--accent-color);
 }
 
-.iframe-wrapper {
-    position: relative;
+input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+/* 5. Live Preview */
+#live-preview {
+    gap: 2rem;
+}
+
+.preview-controls {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+}
+
+.preview-controls input {
+    flex-grow: 1;
+}
+
+.preview-container {
     width: 100%;
     height: 60vh;
-    border: 1px solid var(--primary-color);
-    background-color: #fff;
+    position: relative;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
     overflow: hidden;
+    background-color: #000;
 }
 
-#preview-iframe {
+#previewFrame {
     width: 100%;
     height: 100%;
     border: none;
-}
-
-#weather-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 10;
-    overflow: hidden;
-}
-
-#weather-overlay > div {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 500ms ease-in-out;
-}
-
-#weather-overlay > div.active {
-    opacity: 1;
-}
-
-/* Keyframes for animations */
-@keyframes rain-streaks-fall {
-    0% { background-position: 0 0, 0 0, 0 0; }
-    100% { background-position: 0 200vh, 0 160vh, 0 120vh; }
-}
-
-@keyframes storm-particles-fall {
-    0% { background-position: 0 0, 0 0, 0 0; }
-    100% { background-position: 0 200vh, 0 160vh, 0 120vh; }
-}
-
-@keyframes snow-fall {
-    0% { background-position: 0 0, 0 0, 0 0; }
-    100% { background-position: 50vh 50vh, 100vh 100vh, 75vh 75vh; }
-}
-
-
-@keyframes fog-drift {
-  from {
-    background-position: 0% 0%;
-  }
-  to {
-    background-position: 200% 0%;
-  }
-}
-
-@keyframes lightning-flash {
-    0%, 100% { opacity: 0; }
-    5% { opacity: 0; }
-    6% { opacity: 1; }
-    7% { opacity: 0; }
-    8% { opacity: 1; }
-    12% { opacity: 0; }
-    25% { opacity: 0; }
-}
-
-@keyframes corner-flare {
-    0%, 100% {
-        opacity: 0;
-        transform: scale(0.5);
-    }
-    10%, 30% {
-        opacity: 0.2;
-        transform: scale(1);
-    }
-    20% {
-        opacity: 0.4;
-        transform: scale(1.2);
-    }
-    40% {
-        opacity: 0;
-        transform: scale(1.5);
-    }
-}
-
-/* Rain Effect */
-.rain::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image:
-        radial-gradient(circle, rgba(200,210,220,0.7) 2px, transparent 2.5px),
-        radial-gradient(circle, rgba(200,210,220,0.6) 2.5px, transparent 3px),
-        radial-gradient(circle, rgba(200,210,220,0.5) 3px, transparent 3.5px);
-    background-repeat: repeat;
-    background-size: 200px 200px, 250px 250px, 300px 300px;
-    animation: rain-streaks-fall 1.5s linear infinite;
-}
-
-/* Snow Effect */
-.snow::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image:
-        radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1.1px),
-        radial-gradient(circle, rgba(255,255,255,0.7) 2px, transparent 2.2px),
-        radial-gradient(circle, rgba(255,255,255,0.6) 1.5px, transparent 1.7px);
-    background-repeat: repeat;
-    background-size: 200px 200px, 150px 150px, 250px 250px;
-    animation: snow-fall 15s linear infinite;
-}
-
-/* Sun Effect */
-.sunny.active {
-    backdrop-filter: sepia(0.4) brightness(1.05);
-}
-
-.sunny::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 230, 200, 0.05) 0%, transparent 70%);
-}
-
-.sunny::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(
-        circle at 0% 0%,
-        rgba(255, 255, 220, 0.5) 0%,
-        transparent 20%
-    );
-    opacity: 0;
-    animation: corner-flare 5s ease-in-out infinite;
-    animation-delay: 1s;
-}
-
-/* Fog Effect */
-.foggy .fog-layer {
-  position: absolute;
-  inset: 0;
-  opacity: 0.7;
-  background-image:
-    radial-gradient(ellipse, rgba(255, 255, 255, 0.1) 0%, transparent 70%),
-    radial-gradient(ellipse, rgba(255, 255, 255, 0.05) 0%, transparent 60%),
-    radial-gradient(ellipse, rgba(255, 255, 255, 0.08) 0%, transparent 80%);
-  background-size: 300px 200px, 400px 150px, 250px 180px;
-  background-repeat: repeat;
-  animation: fog-drift 5s linear infinite;
-  filter: blur(2px);
-}
-
-/* Storm Effect */
-.storm::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image:
-        radial-gradient(circle, rgba(180,190,200,0.6) 3px, transparent 3.5px),
-        radial-gradient(circle, rgba(180,190,200,0.5) 4px, transparent 4.5px),
-        radial-gradient(circle, rgba(180,190,200,0.4) 5px, transparent 5.5px);
-    background-repeat: repeat;
-    background-size: 300px 300px, 400px 400px, 500px 500px;
-    animation: storm-particles-fall 2s linear infinite;
-}
-
-.storm::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #ffffff;
-    opacity: 0;
-    animation: lightning-flash 6s linear infinite;
+    background-color: #fff;
 }
 
 #weather-controls {
     display: flex;
+    gap: 1rem;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 20px;
-    transition: opacity 0.3s, transform 0.3s;
 }
 
 #weather-controls.hidden {
-    opacity: 0;
-    transform: translateY(-10px);
+    display: none;
+}
+
+
+/* 6. Weather Overlays */
+.weather-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 10;
 }
 
-#weather-controls .clear-btn {
-    background-color: transparent;
-    color: var(--primary-color);
+.weather-overlay.active {
+    opacity: 1;
 }
-#weather-controls .clear-btn:hover {
-    background-color: var(--primary-color);
-    color: var(--bg-color);
+
+/* Sunny: warm tint, slight bloom */
+.weather-overlay.sunny {
+    background: radial-gradient(circle at 50% 50%, rgba(255,230,200,0.15), rgba(255,180,120,0) 70%);
+    backdrop-filter: sepia(15%) brightness(105%) contrast(105%);
+}
+
+/* Rain: cool tint, subtle noise/streaks */
+.weather-overlay.rain::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image:
+        linear-gradient(transparent 50%, rgba(0,0,0,0.05) 50%),
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23n)" opacity="0.1"/></svg>');
+    backdrop-filter: grayscale(20%) contrast(95%);
+    animation: rain-streaks 0.5s linear infinite;
+}
+
+@keyframes rain-streaks {
+    0% { transform: translateY(-100px); }
+    100% { transform: translateY(0); }
 }
 
 
+/* Snow: increased brightness and contrast */
+.weather-overlay.snow {
+    backdrop-filter: brightness(110%) contrast(115%);
+}
+.weather-overlay.snow::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 200%; height: 200%;
+    background-image: radial-gradient(circle, white 1px, transparent 1.5px);
+    background-size: 50px 50px;
+    animation: snow-fall 20s linear infinite;
+    opacity: 0.3;
+}
+
+@keyframes snow-fall {
+    100% { transform: translate(-50%, -50%); }
+}
+
+/* Fog: reduced contrast, blur */
+.weather-overlay.fog {
+    background: radial-gradient(circle, rgba(255,255,255,0.1), rgba(255,255,255,0) 80%);
+    backdrop-filter: contrast(70%) blur(1px);
+}
+
+/* 7. Accessibility */
 @media (prefers-reduced-motion: reduce) {
     section,
-    #weather-overlay > div {
+    .weather-overlay,
+    .weather-overlay.rain::before,
+    .weather-overlay.snow::before {
         transition: none;
-    }
-
-    .rain::before,
-    .snow::before,
-    .storm::after {
         animation: none;
     }
 
-    .foggy .fog-layer {
-        animation: none;
-        opacity: 0.25;
+    section {
+        opacity: 1;
+        transform: none;
     }
+}
+
+/* 8. CTA Form */
+#cta form {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    max-width: 500px;
+}
+#cta input {
+    flex-grow: 1;
 }
