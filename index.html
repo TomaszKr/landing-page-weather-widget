@@ -34,14 +34,7 @@
                     <button type="submit">Load preview</button>
                 </form>
                 <div id="iframe-wrapper" class="iframe-wrapper">
-                    <div id="weather-overlay">
-                        <canvas id="rain-canvas"></canvas>
-                        <div class="rain" data-weather="rainy"></div>
-                        <div class="snow" data-weather="snowy"></div>
-                        <div class="sunny" data-weather="sunny"></div>
-                        <div class="foggy" data-weather="foggy"><div class="fog-layer"></div></div>
-                        <div class="storm" data-weather="storm"></div>
-                    </div>
+                    <div id="weather-overlay"></div>
                     <iframe id="preview-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
                 </div>
                 <div id="weather-controls" class="hidden">
@@ -49,14 +42,12 @@
                     <button data-weather="rainy">Rainy</button>
                     <button data-weather="snowy">Snowy</button>
                     <button data-weather="foggy">Foggy</button>
-                    <button data-weather="storm">Storm</button>
                     <button data-weather="clear" class="clear-btn">Clear</button>
                 </div>
             </div>
         </section>
         <section id="cta" class="hidden">
-            <h2>CTA</h2>
-            <p>Get early access to the widget.</p>
+            <h2>Get early access to the widget.</h2>
         </section>
     </main>
     <script src="main.js"></script>
